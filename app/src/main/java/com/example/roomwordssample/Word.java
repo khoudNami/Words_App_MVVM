@@ -3,6 +3,7 @@ package com.example.roomwordssample;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "word_table")
@@ -15,6 +16,7 @@ public class Word {
 
     private String mLanguage;
 
+    @Ignore
     public Word(@NonNull String word, String language) {
         this.mWord = word;
         this.mLanguage = language;

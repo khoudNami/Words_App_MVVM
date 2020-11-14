@@ -26,7 +26,7 @@ public class WordRepository {
         new insertAsyncTask(mWordDao).execute(word);
     }
 
-    private class insertAsyncTask extends AsyncTask<Word, Void, Void> {
+    private static class insertAsyncTask extends AsyncTask<Word, Void, Void> {
 
         private WordDao mAsyncTaskDao;
 

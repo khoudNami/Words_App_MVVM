@@ -7,6 +7,8 @@ import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,7 +17,11 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
+
+    private WordViewModel mWordViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +34,14 @@ public class MainActivity extends AppCompatActivity {
         final WordListAdapter adapter = new WordListAdapter(this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        mWordViewModel = ViewModelProviders.of(this).get(WordViewModel.class);
+        mWordViewModel.getAllWords().observe(this, new Observer<List<Word>>() {
+            @Override
+            public void onChanged(List<Word> words) {
+                adapter.setWords(words);
+            }
+        });
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

@@ -21,7 +21,7 @@ public abstract class WordRoomDatabase extends RoomDatabase {
                 @Override
                 public void onOpen(@NonNull SupportSQLiteDatabase db) {
                     super.onOpen(db);
-
+                    new PopulateDbAsync(INSTANCE).execute();
                 }
             };
 

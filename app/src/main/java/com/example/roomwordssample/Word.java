@@ -11,17 +11,18 @@ public class Word {
 
     @PrimaryKey
     @NonNull
-    @ColumnInfo(name = "word")
+    @ColumnInfo(name = "Word")
     private String mWord;
 
+    @ColumnInfo(name = "Language")
     private String mLanguage;
 
-    @Ignore
     public Word(@NonNull String word, String language) {
         this.mWord = word;
         this.mLanguage = language;
     }
 
+    @Ignore
     public Word(@NonNull String word) {
         mWord = word;
     }

@@ -21,7 +21,7 @@ public abstract class WordRoomDatabase extends RoomDatabase {
                 @Override
                 public void onOpen(@NonNull SupportSQLiteDatabase db) {
                     super.onOpen(db);
-
+                    new PopulateDbAsync(INSTANCE).execute();
                 }
             };
 
@@ -37,23 +37,26 @@ public abstract class WordRoomDatabase extends RoomDatabase {
                 }
             }
         }
-
         return INSTANCE;
     }
 
     private static class PopulateDbAsync extends AsyncTask<Void, Void, Void> {
+
         private final WordDao mDao;
         String[] words = {"ubaba", "umama", "ingane"};
 
-        public PopulateDbAsync(WordRoomDatabase db) {
+        PopulateDbAsync(WordRoomDatabase db) {
             mDao = db.getWordDao();
         }
 
         @Override
-        protected Void doInBackground(Void... params) {
+        protected Void doInBackground(final Void... params) {
+            // Start the app with a clean database every time.
+            // Not needed if you only populate the database
+            // when it is first created
             mDao.deleteAll();
 
-            for (int i = 0; i < words.length; i++) {
+            for (int i = 0; i <= words.length - 1; i++) {
                 Word word = new Word(words[i]);
                 mDao.insert(word);
             }

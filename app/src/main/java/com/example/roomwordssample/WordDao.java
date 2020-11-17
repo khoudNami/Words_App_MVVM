@@ -15,7 +15,7 @@ public interface WordDao {
     long insert(Word word);
 
     @Query("SELECT * FROM word_table")
-    List<Word> getAllWords();
+    LiveData<List<Word>> getAllWords();
 }
 
 

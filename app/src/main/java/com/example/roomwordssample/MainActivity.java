@@ -5,12 +5,14 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
 
 import android.util.Log;
 import android.view.View;
 
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -20,6 +22,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     WordDao mDao;
     EditText wordEditText;
     Button createButton, readButton, updateButton, deleteButton;
+    List<Word> listOfWords;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,26 +62,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.buttonCreate:
                 insertWord(word);
                 break;
+
             case R.id.buttonUpdate:
-
                 break;
+
             case R.id.buttonRead:
-                List<Word> listOfWords = getAllWords();
-                for (Word myword : listOfWords) {
-                    Log.d("getAllWords", myword.getWord());
-                }
+                readAndDisplayAllWords();
                 break;
-            case R.id.buttonDelete:
 
+            case R.id.buttonDelete:
                 break;
         }
     }
 
-    private List<Word> getAllWords() {
-        List<Word> listOfWords = null;
-        GetAllWordsAsync allWordsAsync = new GetAllWordsAsync(mDao, listOfWords);
-        return listOfWords;
+    private void readAndDisplayAllWords() {
+        mDao.getAllWords().observe(this, new Observer<List<Word>>() {
+            @Override
+            public void onChanged(List<Word> list) {
+                listOfWords = list;
+                for (int i = 0; i < listOfWords.size(); i++) {
+                    Log.d("getAllWords", listOfWords.get(i).getWord());
+                }
+            }
+        });
     }
+
 
     private void insertWord(String word) {
         Word newWord = new Word(word, "English");

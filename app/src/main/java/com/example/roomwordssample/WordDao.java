@@ -12,7 +12,7 @@ import java.util.List;
 public interface WordDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    void insert(Word word);
+    long insert(Word word);
 }
 
 

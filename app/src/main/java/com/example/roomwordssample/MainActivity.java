@@ -3,16 +3,12 @@ package com.example.roomwordssample;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.util.Log;
 import android.view.View;
 
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -34,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mDao = mRoomDatabase.getWordDao();
 
         wordEditText = findViewById(R.id.editTextWord);
-        submitButton = findViewById(R.id.buttonSubmit);
+        submitButton = findViewById(R.id.buttonCreate);
         submitButton.setOnClickListener(this);
 
     }
@@ -42,13 +38,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         String word = wordEditText.getText().toString();
-        Word newWord = new Word(word,"English");
 
+        switch (v.getId()) {
+            case R.id.buttonCreate:
+                insertWord(word);
+                break;
+            case R.id.buttonUpdate:
 
+                break;
+            case R.id.buttonRead:
+
+                break;
+            case R.id.buttonDelete:
+
+                break;
+        }
+    }
+
+    private void insertWord(String word) {
+        Word newWord = new Word(word, "English");
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
-                mDao.insert(newWord);
+                long id = mDao.insert(newWord);
+                Log.d("INSERT", "Insert at row id: " + id);
             }
         });
     }

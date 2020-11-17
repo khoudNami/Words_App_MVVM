@@ -12,12 +12,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     WordRoomDatabase mRoomDatabase;
     WordDao mDao;
     EditText wordEditText;
-    Button submitButton;
+    Button createButton, readButton, updateButton, deleteButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,10 +31,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mRoomDatabase = WordRoomDatabase.getInstance(this);
         mDao = mRoomDatabase.getWordDao();
 
-        wordEditText = findViewById(R.id.editTextWord);
-        submitButton = findViewById(R.id.buttonCreate);
-        submitButton.setOnClickListener(this);
+        findViewsById();
 
+        setOnClickListeners();
+    }
+
+    private void setOnClickListeners() {
+        createButton.setOnClickListener(this);
+        readButton.setOnClickListener(this);
+        updateButton.setOnClickListener(this);
+        deleteButton.setOnClickListener(this);
+    }
+
+    private void findViewsById() {
+        wordEditText = findViewById(R.id.editTextWord);
+        createButton = findViewById(R.id.buttonCreate);
+        readButton = findViewById(R.id.buttonRead);
+        updateButton = findViewById(R.id.buttonUpdate);
+        deleteButton = findViewById(R.id.buttonRead);
     }
 
     @Override
@@ -47,12 +63,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 break;
             case R.id.buttonRead:
-
+                List<Word> listOfWords = getAllWords();
+                for (Word myword : listOfWords) {
+                    Log.d("getAllWords", myword.getWord());
+                }
                 break;
             case R.id.buttonDelete:
 
                 break;
         }
+    }
+
+    private List<Word> getAllWords() {
+        List<Word> listOfWords = null;
+        GetAllWordsAsync allWordsAsync = new GetAllWordsAsync(mDao, listOfWords);
+        return listOfWords;
     }
 
     private void insertWord(String word) {

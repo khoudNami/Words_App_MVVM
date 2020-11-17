@@ -13,6 +13,9 @@ public interface WordDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     long insert(Word word);
+
+    @Query("SELECT * FROM word_table")
+    List<Word> getAllWords();
 }
 
 

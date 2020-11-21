@@ -54,5 +54,14 @@ public class WordRepository {
         });
     }
 
+    public void deleteWord(Word word) {
+        databaseExecuterService.execute(new Runnable() {
+            @Override
+            public void run() {
+                mWordDao.deleteWord(word);
+            }
+        });
+    }
+
 
 }

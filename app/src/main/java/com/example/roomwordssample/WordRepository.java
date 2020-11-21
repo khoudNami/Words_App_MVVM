@@ -44,4 +44,15 @@ public class WordRepository {
         });
         return words;
     }
+
+    public void deleteAll() {
+        databaseExecuterService.execute(new Runnable() {
+            @Override
+            public void run() {
+                mWordDao.deleteAll();
+            }
+        });
+    }
+
+
 }

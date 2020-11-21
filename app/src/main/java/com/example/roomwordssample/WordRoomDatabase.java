@@ -16,12 +16,24 @@ public abstract class WordRoomDatabase extends RoomDatabase {
 
     private static WordRoomDatabase INSTANCE;
 
-    private static RoomDatabase.Callback sRoomDatabaseCallback =
+    private static final RoomDatabase.Callback sRoomDatabaseCallback =
             new RoomDatabase.Callback() {
                 @Override
                 public void onOpen(@NonNull SupportSQLiteDatabase db) {
                     super.onOpen(db);
-                    new PopulateDbAsync(INSTANCE).execute();
+                    WordRepository.databaseExecuterService.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            String[] words = {"ubaba", "umama", "ingane"};
+                            WordDao wordDao = INSTANCE.getWordDao();
+                            if (wordDao.getAnyWord().length < 1) {
+                                for (int i = 0; i < words.length; i++) {
+                                    Word word = new Word(words[i]);
+                                    wordDao.insert(word);
+                                }
+                            }
+                        }
+                    });
                 }
             };
 

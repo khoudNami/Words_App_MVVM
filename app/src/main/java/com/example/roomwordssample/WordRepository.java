@@ -6,11 +6,15 @@ import android.os.AsyncTask;
 import androidx.lifecycle.LiveData;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class WordRepository {
 
-    private WordDao mWordDao;
-    private LiveData<List<Word>> mAllWords;
+    private final WordDao mWordDao;
+    private final LiveData<List<Word>> mAllWords;
+    static final ExecutorService databaseExecuterService = Executors.newFixedThreadPool(5);
+    Word[] words;
 
     WordRepository(Application application) {
         WordRoomDatabase roomDatabase = WordRoomDatabase.getInstance(application);
@@ -23,21 +27,21 @@ public class WordRepository {
     }
 
     public void insert(Word word) {
-        new insertAsyncTask(mWordDao).execute(word);
+        databaseExecuterService.execute(new Runnable() {
+            @Override
+            public void run() {
+                mWordDao.insert(word);
+            }
+        });
     }
 
-    private static class insertAsyncTask extends AsyncTask<Word, Void, Void> {
-
-        private WordDao mAsyncTaskDao;
-
-        public insertAsyncTask(WordDao dao) {
-            mAsyncTaskDao = dao;
-        }
-
-        @Override
-        protected Void doInBackground(final Word... params) {
-            mAsyncTaskDao.insert(params[0]);
-            return null;
-        }
+    public Word[] getAnyWord() {
+        databaseExecuterService.execute(new Runnable() {
+            @Override
+            public void run() {
+                words = mWordDao.getAnyWord();
+            }
+        });
+        return words;
     }
 }

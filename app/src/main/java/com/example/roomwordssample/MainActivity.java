@@ -15,9 +15,13 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    public static final int NUMBER_OF_THREADS = 4;
     WordRoomDatabase mRoomDatabase;
     WordDao mDao;
     EditText wordEditText;
@@ -63,12 +67,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 insertWord(word);
                 break;
 
-            case R.id.buttonUpdate:
-                break;
-
             case R.id.buttonRead:
                 readAndDisplayAllWords();
                 break;
+
+            case R.id.buttonUpdate:
+                break;
+
 
             case R.id.buttonDelete:
                 break;
@@ -79,28 +84,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mDao.getAllWords().observe(this, new Observer<List<Word>>() {
             @Override
             public void onChanged(List<Word> list) {
-                listOfWords = list;
-                for (int i = 0; i < listOfWords.size(); i++) {
-                    Log.d("getAllWords", listOfWords.get(i).getWord());
+                //listOfWords = list;
+                for (int i = 0; i < list.size(); i++) {
+                    Log.d("getAllWords", "Word: " + list.get(i).getWord() + " Language: " + list.get(i).getLanguage());
                 }
             }
         });
     }
 
-
     private void insertWord(String word) {
         Word newWord = new Word(word, "English");
-        AsyncTask.execute(new Runnable() {
+
+        WordRoomDatabase.databaseReadWriteExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                long id = mDao.insert(newWord);
-                Log.d("INSERT", "Insert at row id: " + id);
+                long position = mDao.insert(newWord);
+                Log.d("INSERT", "Inserted: " + newWord.getWord() + " " + newWord.getLanguage() + " at position: " + position);
             }
         });
+
     }
 
 }
 
+
+//        WordRoomDatabase.databaseReadWriteExecutor.execute(new Runnable() {
+//            @Override
+//            public void run() {
+//                mDao.insert(newWord);
+//                Log.d("INSERT", "Inserted: " + newWord.getWord() + " " + newWord.getLanguage());
+//            }
+//        });
 
 //    FloatingActionButton fab = findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {

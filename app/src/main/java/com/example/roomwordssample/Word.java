@@ -9,17 +9,19 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "word_table")
 public class Word {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
+    private int id;
+
     @NonNull
     @ColumnInfo(name = "word")
-    private String mWord;
+    private final String mWord;
 
     private String mLanguage;
 
     @Ignore
-    public Word(@NonNull String word, String language) {
+    public Word(int id, @NonNull String word) {
         this.mWord = word;
-        this.mLanguage = language;
+        this.id = id;
     }
 
     public Word(@NonNull String word) {
@@ -35,7 +37,15 @@ public class Word {
         return mLanguage;
     }
 
+    public int getId() {
+        return id;
+    }
+
     public void setLanguage(String language) {
         mLanguage = language;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

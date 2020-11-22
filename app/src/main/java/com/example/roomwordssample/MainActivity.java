@@ -25,9 +25,12 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final String WORD = "com.example.android.roomwordssample.WORD";
+
     private WordViewModel mWordViewModel;
 
     public static final int NEW_WORD_ACTIVITY_REQUEST_CODE = 1;
+    public static final int UPDATE_WORD_REQUEST_CODE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +39,9 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        /**
+         * RecyclerView code
+         */
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
         final WordListAdapter adapter = new WordListAdapter(this);
         recyclerView.setAdapter(adapter);
@@ -43,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         ItemTouchHelper helper = new ItemTouchHelper(new ItemTouchHelper.Callback() {
             @Override
             public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
-                return makeMovementFlags(0, ItemTouchHelper.LEFT|ItemTouchHelper.RIGHT);
+                return makeMovementFlags(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
             }
 
             @Override
@@ -62,6 +68,9 @@ public class MainActivity extends AppCompatActivity {
 
         helper.attachToRecyclerView(recyclerView);
 
+        /**
+         * ViewModel code
+         */
         mWordViewModel = ViewModelProviders.of(this).get(WordViewModel.class);
         mWordViewModel.getAllWords().observe(this, new Observer<List<Word>>() {
             @Override
@@ -70,6 +79,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * Fab click code
+         */
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,6 +92,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Handling results from startActivityForResult
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -87,30 +102,28 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == NEW_WORD_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
             Word word = new Word(data.getStringExtra(NewWordActivity.EXTRA_REPLY));
             mWordViewModel.insert(word);
+        } else if (requestCode == UPDATE_WORD_REQUEST_CODE && resultCode == RESULT_OK) {
+            Word word = new Word(data.getIntExtra(NewWordActivity.WORD_ID, -1), data.getStringExtra(WORD));
+            mWordViewModel.update(word);
         } else {
-            Toast.makeText(
-                    getApplicationContext(),
-                    R.string.empty_not_saved,
-                    Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), R.string.empty_not_saved, Toast.LENGTH_LONG).show();
         }
 
     }
 
+    /**
+     * Menus code handled
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.clear_data) {
             Toast.makeText(this, "Clearing the data...", Toast.LENGTH_SHORT);
             mWordViewModel.deleteAll();

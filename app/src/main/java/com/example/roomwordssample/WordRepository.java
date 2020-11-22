@@ -63,5 +63,17 @@ public class WordRepository {
         });
     }
 
+    public LiveData<Word> getWord(int id) {
+        return mWordDao.getWord(id);
+    }
 
+
+    public void update(Word word) {
+        databaseExecuterService.execute(new Runnable() {
+            @Override
+            public void run() {
+                mWordDao.update(word);
+            }
+        });
+    }
 }

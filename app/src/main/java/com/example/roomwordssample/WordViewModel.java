@@ -36,4 +36,12 @@ public class WordViewModel extends AndroidViewModel {
     public void deleteWord(Word word) {
         mRepository.deleteWord(word);
     }
+
+    public LiveData<Word> getWord(int id) {
+        return mRepository.getWord(id);
+    }
+
+    public void update(Word word) {
+        mRepository.update(word);
+    }
 }

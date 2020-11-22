@@ -1,6 +1,9 @@
 package com.example.roomwordssample;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +36,7 @@ public class WordListAdapter extends RecyclerView.Adapter<WordListAdapter.WordVi
         } else {
             // Covers the case of data not being ready yet.
             holder.wordItemView.setText("No Word");
+
         }
     }
 
@@ -56,10 +60,21 @@ public class WordListAdapter extends RecyclerView.Adapter<WordListAdapter.WordVi
         private WordViewHolder(View itemView) {
             super(itemView);
             wordItemView = itemView.findViewById(R.id.textView);
+            wordItemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Word word = getWordAtPosition(getAdapterPosition());
+                    Word word = mWords.get(getAdapterPosition());
+                    Intent intent = new Intent(v.getContext(), NewWordActivity.class);
+                    intent.putExtra(NewWordActivity.WORD_ID, word.getId());
+                    ((Activity) v.getContext()).startActivityForResult(intent, MainActivity.UPDATE_WORD_REQUEST_CODE);
+                    Log.d("TAG", word.getWord() + " " + word.getId());
+                }
+            });
         }
     }
 
-    public Word getWordAtPosition(int position){
+    public Word getWordAtPosition(int position) {
         return mWords.get(position);
     }
 }

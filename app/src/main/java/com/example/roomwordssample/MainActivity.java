@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         ItemTouchHelper helper = new ItemTouchHelper(new ItemTouchHelper.Callback() {
             @Override
             public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
-                return ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT;
+                return makeMovementFlags(0, ItemTouchHelper.LEFT|ItemTouchHelper.RIGHT);
             }
 
             @Override

@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
          * RecyclerView code
          */
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
-        final WordListAdapter adapter = new WordListAdapter(this);
+        final WordListAdapter adapter = new WordListAdapter(new WordListAdapter.WordDiff());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         ItemTouchHelper helper = new ItemTouchHelper(new ItemTouchHelper.Callback() {

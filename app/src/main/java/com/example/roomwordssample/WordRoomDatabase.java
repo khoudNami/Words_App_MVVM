@@ -1,7 +1,6 @@
 package com.example.roomwordssample;
 
 import android.content.Context;
-import android.os.AsyncTask;
 
 import androidx.annotation.NonNull;
 import androidx.room.Database;
@@ -21,7 +20,7 @@ public abstract class WordRoomDatabase extends RoomDatabase {
                 @Override
                 public void onOpen(@NonNull SupportSQLiteDatabase db) {
                     super.onOpen(db);
-                    WordRepository.databaseExecuterService.execute(new Runnable() {
+                    WordRepository.databaseExecutorService.execute(new Runnable() {
                         @Override
                         public void run() {
                             String[] words = {"ubaba", "umama", "ingane"};
@@ -50,30 +49,6 @@ public abstract class WordRoomDatabase extends RoomDatabase {
             }
         }
         return INSTANCE;
-    }
-
-    private static class PopulateDbAsync extends AsyncTask<Void, Void, Void> {
-
-        private final WordDao mDao;
-        String[] words = {"ubaba", "umama", "ingane"};
-
-        PopulateDbAsync(WordRoomDatabase db) {
-            mDao = db.getWordDao();
-        }
-
-        @Override
-        protected Void doInBackground(final Void... params) {
-            // Start the app with a clean database every time.
-            // Not needed if you only populate the database
-            // when it is first created
-            mDao.deleteAll();
-
-            for (int i = 0; i <= words.length - 1; i++) {
-                Word word = new Word(words[i]);
-                mDao.insert(word);
-            }
-            return null;
-        }
     }
 
 }

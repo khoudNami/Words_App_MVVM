@@ -1,7 +1,6 @@
 package com.example.roomwordssample;
 
 import android.app.Application;
-import android.os.AsyncTask;
 
 import androidx.lifecycle.LiveData;
 
@@ -12,22 +11,21 @@ import java.util.concurrent.Executors;
 public class WordRepository {
 
     private final WordDao mWordDao;
-    private final LiveData<List<Word>> mAllWords;
-    static final ExecutorService databaseExecuterService = Executors.newFixedThreadPool(5);
-    Word[] words;
+   // private final LiveData<List<Word>> mAllWords; I really dont see the need for this field
+    static final ExecutorService databaseExecutorService = Executors.newFixedThreadPool(5);
 
     WordRepository(Application application) {
         WordRoomDatabase roomDatabase = WordRoomDatabase.getInstance(application);
         mWordDao = roomDatabase.getWordDao();
-        mAllWords = mWordDao.getAllWords();
+       // mAllWords = mWordDao.getAllWords();
     }
 
     LiveData<List<Word>> getAllWords() {
-        return mAllWords;
+        return mWordDao.getAllWords();
     }
 
     public void insert(Word word) {
-        databaseExecuterService.execute(new Runnable() {
+        databaseExecutorService.execute(new Runnable() {
             @Override
             public void run() {
                 mWordDao.insert(word);
@@ -35,18 +33,8 @@ public class WordRepository {
         });
     }
 
-    public Word[] getAnyWord() {
-        databaseExecuterService.execute(new Runnable() {
-            @Override
-            public void run() {
-                words = mWordDao.getAnyWord();
-            }
-        });
-        return words;
-    }
-
     public void deleteAll() {
-        databaseExecuterService.execute(new Runnable() {
+        databaseExecutorService.execute(new Runnable() {
             @Override
             public void run() {
                 mWordDao.deleteAll();
@@ -55,7 +43,7 @@ public class WordRepository {
     }
 
     public void deleteWord(Word word) {
-        databaseExecuterService.execute(new Runnable() {
+        databaseExecutorService.execute(new Runnable() {
             @Override
             public void run() {
                 mWordDao.deleteWord(word);
@@ -67,9 +55,8 @@ public class WordRepository {
         return mWordDao.getWord(id);
     }
 
-
     public void update(Word word) {
-        databaseExecuterService.execute(new Runnable() {
+        databaseExecutorService.execute(new Runnable() {
             @Override
             public void run() {
                 mWordDao.update(word);

@@ -20,7 +20,10 @@ public interface WordDao {
     void deleteWord(Word word);
 
     @Update
-    void update(Word... words);
+    void update(Word word);
+
+//    @Update
+//    void update(Word... word);//variable number of params
 
     @Query("DELETE FROM word_table")
     void deleteAll();

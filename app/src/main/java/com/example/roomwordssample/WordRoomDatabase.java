@@ -25,11 +25,17 @@ public abstract class WordRoomDatabase extends RoomDatabase {
                         public void run() {
                             String[] words = {"ubaba", "umama", "ingane"};
                             WordDao wordDao = INSTANCE.getWordDao();
+
                             if (wordDao.getAnyWord().length < 1) {
-                                for (int i = 0; i < words.length; i++) {
-                                    Word word = new Word(words[i]);
-                                    wordDao.insert(word);
+                                int x =1;
+                                while (x<=100000){
+                                    for (int i = 0; i < words.length; i++) {
+                                        Word word = new Word(words[i]);
+                                        wordDao.insert(word);
+                                    }
+                                    x++;
                                 }
+
                             }
                         }
                     });

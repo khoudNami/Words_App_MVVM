@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         /**
-         * Fab click code
+         * Fab click code triggers startActivityForResult()
          */
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Handling results from startActivityForResult
+     * Handling results from startActivityForResult() with onActivityResult()
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

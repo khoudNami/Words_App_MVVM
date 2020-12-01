@@ -9,22 +9,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.paging.PagedListAdapter;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-public class WordListAdapter extends RecyclerView.Adapter<WordListAdapter.WordViewHolder> {
+public class WordListAdapter extends PagedListAdapter<Word, WordListAdapter.WordViewHolder> {
 
-    private final LayoutInflater mInflater;
+
     private List<Word> mWords; // Cached copy of words
 
-    WordListAdapter(Context context) {
-        mInflater = LayoutInflater.from(context);
+    WordListAdapter(@NonNull DiffUtil.ItemCallback<Word> diffCallback) {
+        super(diffCallback);
     }
 
     @Override
     public WordViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = mInflater.inflate(R.layout.recyclerview_item, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.recyclerview_item, parent, false);
         return new WordViewHolder(itemView);
     }
 
@@ -36,7 +40,6 @@ public class WordListAdapter extends RecyclerView.Adapter<WordListAdapter.WordVi
         } else {
             // Covers the case of data not being ready yet.
             holder.wordItemView.setText("No Word");
-
         }
     }
 
@@ -76,5 +79,18 @@ public class WordListAdapter extends RecyclerView.Adapter<WordListAdapter.WordVi
 
     public Word getWordAtPosition(int position) {
         return mWords.get(position);
+    }
+
+    static class WordDiff extends DiffUtil.ItemCallback<Word> {
+
+        @Override
+        public boolean areItemsTheSame(@NonNull Word oldItem, @NonNull Word newItem) {
+            return oldItem == newItem;
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull Word oldItem, @NonNull Word newItem) {
+            return oldItem.getWord().equals(newItem.getWord());
+        }
     }
 }

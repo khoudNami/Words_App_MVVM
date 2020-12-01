@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.paging.PagedList;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -43,8 +44,8 @@ public class MainActivity extends AppCompatActivity {
          * RecyclerView code
          */
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
-        final WordListAdapter adapter = new WordListAdapter(this);
-        recyclerView.setAdapter(adapter);
+        final WordListAdapter adapter = new WordListAdapter(new WordListAdapter.WordDiff());
+//        recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         ItemTouchHelper helper = new ItemTouchHelper(new ItemTouchHelper.Callback() {
             @Override
@@ -72,12 +73,15 @@ public class MainActivity extends AppCompatActivity {
          * ViewModel code
          */
         mWordViewModel = ViewModelProviders.of(this).get(WordViewModel.class);
-        mWordViewModel.getAllWords().observe(this, new Observer<List<Word>>() {
+
+        mWordViewModel.getPagedListLiveData().observe(this, new Observer<PagedList<Word>>() {
             @Override
-            public void onChanged(List<Word> words) {
+            public void onChanged(PagedList<Word> words) {
                 adapter.setWords(words);
             }
         });
+        recyclerView.setAdapter(adapter);
+
 
         /**
          * Fab click code triggers startActivityForResult()

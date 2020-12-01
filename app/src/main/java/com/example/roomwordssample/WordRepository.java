@@ -3,6 +3,9 @@ package com.example.roomwordssample;
 import android.app.Application;
 
 import androidx.lifecycle.LiveData;
+import androidx.paging.DataSource;
+import androidx.paging.LivePagedListBuilder;
+import androidx.paging.PagedList;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -11,17 +14,22 @@ import java.util.concurrent.Executors;
 public class WordRepository {
 
     private final WordDao mWordDao;
-   // private final LiveData<List<Word>> mAllWords; I really dont see the need for this field
     static final ExecutorService databaseExecutorService = Executors.newFixedThreadPool(5);
+
+    private final LiveData<PagedList<Word>> mPagedListLiveData;
 
     WordRepository(Application application) {
         WordRoomDatabase roomDatabase = WordRoomDatabase.getInstance(application);
         mWordDao = roomDatabase.getWordDao();
-       // mAllWords = mWordDao.getAllWords();
+        mPagedListLiveData = new LivePagedListBuilder<>(mWordDao.getAllWordsPaging(), 20).build();
     }
 
     LiveData<List<Word>> getAllWords() {
         return mWordDao.getAllWords();
+    }
+
+    LiveData<PagedList<Word>> getAllWordsPaging() {
+        return mPagedListLiveData;
     }
 
     public void insert(Word word) {

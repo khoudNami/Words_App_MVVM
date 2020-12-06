@@ -3,6 +3,8 @@ package com.example.roomwordssample;
 import android.app.Application;
 
 import androidx.lifecycle.LiveData;
+import androidx.paging.LivePagedListBuilder;
+import androidx.paging.PagedList;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -11,13 +13,15 @@ import java.util.concurrent.Executors;
 public class WordRepository {
 
     private final WordDao mWordDao;
-   // private final LiveData<List<Word>> mAllWords; I really dont see the need for this field
     static final ExecutorService databaseExecutorService = Executors.newFixedThreadPool(5);
 
     WordRepository(Application application) {
         WordRoomDatabase roomDatabase = WordRoomDatabase.getInstance(application);
         mWordDao = roomDatabase.getWordDao();
-       // mAllWords = mWordDao.getAllWords();
+    }
+
+    LiveData<PagedList<Word>> getAllPagedWords() {
+        return new LivePagedListBuilder<>(mWordDao.getAllPagedWords(), 20).build();
     }
 
     LiveData<List<Word>> getAllWords() {
@@ -32,6 +36,7 @@ public class WordRepository {
             }
         });
     }
+
 
     public void deleteAll() {
         databaseExecutorService.execute(new Runnable() {

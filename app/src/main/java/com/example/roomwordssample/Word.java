@@ -1,6 +1,7 @@
 package com.example.roomwordssample;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -47,5 +48,16 @@ public class Word {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj == this)
+            return true;
+
+        Word word = (Word) obj;
+        return word.id == this.id
+                && word.mWord == this.mWord
+                && word.mLanguage == this.mLanguage;
     }
 }
